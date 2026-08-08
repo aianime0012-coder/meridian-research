@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Readiness Scorecard — Meridian Research &amp; Advisory</title>
+<meta name="description" content="Answer 12 questions and get a 0–100 AI readiness score across data, skills, process, governance, and budget. Free, 10 minutes, no sales call.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B1F3A; --blue:#1B5FD9; --teal:#14B8A6; --amber:#F59E0B;
+  --paper:#FAFAF7; --slate:#5B6B7C; --line:#E3E7EC;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--navy);background:var(--paper);line-height:1.6}
+h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+header{background:var(--navy);color:#fff;padding:20px 0}
+.brand{font-weight:700;letter-spacing:.02em}
+.brand span{color:var(--teal)}
+main{padding:56px 0 80px}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.15}
+.lede{color:var(--slate);margin:12px 0 8px}
+.progress{display:flex;gap:6px;margin:24px 0 8px}
+.progress i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.progress i.on{background:var(--teal)}
+.q{margin:0 0 4px;font-size:.8rem;color:var(--slate)}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:0 1px 3px rgba(11,31,58,.06)}
+.card h3{font-size:1.15rem;margin-bottom:16px}
+.opts{display:grid;gap:10px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--blue)}
+.opt.sel{border-color:var(--teal);background:rgba(20,184,166,.06)}
+.opt input{margin-top:4px;accent-color:var(--teal)}
+.opt .lbl{font-weight:600;font-size:.92rem}
+.opt .desc{color:var(--slate);font-size:.85rem}
+.nav{display:flex;justify-content:space-between;margin-top:20px}
+.btn{display:inline-block;background:var(--blue);color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:600;border:none;font-family:inherit;font-size:1rem;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.teal{background:var(--teal);color:var(--navy)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--slate)}
+.result{display:none}
+.gauge{width:220px;height:220px;border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;background:conic-gradient(var(--teal) 0deg,var(--line) 0deg)}
+.gauge .inner{width:180px;height:180px;border-radius:50%;background:var(--paper);display:grid;place-items:center;text-align:center}
+.gauge .score{font-family:'Space Grotesk',sans-serif;font-size:3rem;font-weight:700;line-height:1}
+.gauge .of{font-size:.8rem;color:var(--slate)}
+.bars{margin:24px 0}
+.bar-row{margin:10px 0}
+.bar-row .t{display:flex;justify-content:space-between;font-size:.85rem;color:var(--slate)}
+.bar-row .t b{color:var(--navy)}
+.bar{height:10px;border-radius:5px;background:var(--line);margin-top:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:5px}
+.badge{display:inline-block;padding:6px 14px;border-radius:99px;font-weight:700;font-size:.85rem;margin-bottom:16px}
+.badge.a{background:rgba(20,184,166,.15);color:#0e8a7c}
+.badge.b{background:rgba(27,95,217,.12);color:var(--blue)}
+.badge.c{background:rgba(245,158,11,.18);color:#b97800}
+.badge.d{background:rgba(91,107,124,.15);color:var(--slate)}
+.gaps{text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin:24px 0}
+.gaps h4{font-family:'Space Grotesk',sans-serif;margin-bottom:8px}
+.gaps li{margin:6px 0;font-size:.92rem;color:var(--navy)}
+.gaps li span{color:var(--slate)}
+.cta-note{color:var(--slate);font-size:.85rem;margin-top:16px}
+footer{background:var(--navy);color:#9fb0c6;font-size:.85rem;padding:32px 0;text-align:center}
+footer a{color:#c9d6e8}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="brand">Meridian<span>Research</span></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <span style="background:var(--amber);color:var(--navy);font-weight:700;padding:3px 10px;border-radius:6px;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em">Free · 10 minutes</span>
+  <h1>AI Readiness Scorecard</h1>
+  <p class="lede">12 questions across data, skills, process, governance, and
+  budget. Your 0–100 score shows exactly where to start — no sales call required.</p>
+
+  <div class="progress" id="progress"></div>
+
+  <form id="quiz">
+    <div id="cards"></div>
+    <div class="nav">
+      <button type="button" class="btn ghost" id="prev" disabled>&larr; Back</button>
+      <button type="button" class="btn teal" id="next">Next &rarr;</button>
+    </div>
+  </form>
+
+  <div id="result" class="result">
+    <div class="gauge" id="gauge"><div class="inner"><div><div class="score" id="scoreVal">0</div><div class="of">/ 100</div></div></div></div>
+    <div style="text-align:center"><span class="badge" id="badge">—</span></div>
+    <h2 id="verdict" style="text-align:center"></h2>
+    <div class="bars" id="bars"></div>
+    <div class="gaps" id="gaps"></div>
+    <div style="text-align:center">
+      <button type="button" class="btn teal" id="download">Download my report (PDF)</button>
+      <button type="button" class="btn ghost" id="printBtn">Print / Save as PDF</button>
+    </div>
+    <p class="cta-note" style="text-align:center">"Print / Save as PDF" opens a printer-friendly
+    view you can save directly as a PDF. The download button saves a text copy of the report.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+      <input type="email" id="email" placeholder="Work email" style="padding:10px 14px;border:1px solid var(--line);border-radius:8px;font-family:inherit;min-width:260px">
+      <button type="button" class="btn" id="sendEmail">Email me the report</button>
+    </div>
+    <p class="cta-note" style="text-align:center">Privacy: we never sell your data. AI-assisted, human-reviewed.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Meridian Research &amp; Advisory</strong> · Decisions beyond the horizon.</p>
+    <p style="margin-top:8px">Prepared by Meridian Research &amp; Advisory. Analysis is AI-assisted and human-reviewed.</p>
+  </div>
+</footer>
+
+<script>
+const QUIZ = [
+  {cat:"Data", catShort:"Data", w:25, q:"Do you have a written map of the data feeding your key processes?",
+    opts:[["A","Documented, current, and governed"],["B","Partially documented"],["C","Ad-hoc / tribal knowledge"],["D","No map"]]},
+  {cat:"Data", catShort:"Data", w:25, q:"Is the data AI will consume verified for accuracy and consistency?",
+    opts:[["A","Validated by owners on a schedule"],["B","Spot-checked"],["C","Assumed clean"],["D","Known to be messy"]]},
+  {cat:"Data", catShort:"Data", w:25, q:"Can the right people or agents reach the data they need, when they need it?",
+    opts:[["A","Self-service with access control"],["B","Via ticket or requests"],["C","Silos and manual extraction"],["D","Blocked"]]},
+  {cat:"Skills", catShort:"Skills", w:20, q:"Is there a named owner with budget authority for AI initiatives?",
+    opts:[["A","Yes, with a written success metric"],["B","A sponsor, no formal metric"],["C","Committees / no single owner"],["D","None"]]},
+  {cat:"Skills", catShort:"Skills", w:20, q:"Can your team evaluate, run, and maintain an AI tool today?",
+    opts:[["A","Yes, in-house"],["B","Partial, with vendor help"],["C","No, fully external"],["D","None / unknown"]]},
+  {cat:"Skills", catShort:"Skills", w:20, q:"Do teams routinely design prompts and workflows around tools?",
+    opts:[["A","Yes, standardized"],["B","Some individuals"],["C","Rarely"],["D","Never"]]},
+  {cat:"Process", catShort:"Process", w:20, q:"Are the processes you would automate written down?",
+    opts:[["A","Fully documented with metrics"],["B","Partially"],["C","In people's heads"],["D","No"]]},
+  {cat:"Process", catShort:"Process", w:20, q:"Do you time-box pilots with a defined success metric and a kill-switch?",
+    opts:[["A","Always"],["B","Sometimes"],["C","Rarely"],["D","Never"]]},
+  {cat:"Process", catShort:"Process", w:20, q:"Is there a plan for training users to actually adopt new tools?",
+    opts:[["A","Yes, with change management"],["B","Basic training only"],["C","Relies on enthusiasm"],["D","None"]]},
+  {cat:"Governance", catShort:"Governance", w:20, q:"Is there awareness of applicable rules (e.g., EU AI Act, data protection) for AI use?",
+    opts:[["A","Assessed and documented"],["B","Awareness, no assessment"],["C","Assumed vendor's job"],["D","None"]]},
+  {cat:"Governance", catShort:"Governance", w:20, q:"Are outputs reviewed by a human with authority before action?",
+    opts:[["A","Yes, built into the flow"],["B","Sometimes"],["C","Rarely"],["D","No"]]},
+  {cat:"Budget", catShort:"Budget", w:15, q:"Is there a real budget with a cost/benefit threshold for AI initiatives?",
+    opts:[["A","Yes, with ROI bar"],["B","Soft budget"],["C","Ad-hoc"],["D","No budget"]]}
+];
+
+const CATS = ["Data","Skills","Process","Governance","Budget"];
+const POINTS = {A:4,B:3,C:2,D:1};
+const MAXRAW = 48;
+const answers = new Array(QUIZ.length).fill(null);
+let idx = 0;
+
+const cardsEl = document.getElementById('cards');
+const progEl = document.getElementById('progress');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+
+function buildProgress(){
+  progEl.innerHTML = "";
+  for(let i=0;i<QUIZ.length;i++){ const d=document.createElement('i'); if(i<=idx) d.className="on"; progEl.appendChild(d); }
+}
+
+function render(){
+  buildProgress();
+  cardsEl.innerHTML = "";
+  const q = QUIZ[idx];
+  const card = document.createElement('div');
+  card.className = "card";
+  card.innerHTML = '<p class="q">'+q.catShort+' · Question '+(idx+1)+' of '+QUIZ.length+' · Weight '+q.w+'</p><h3>'+q.q+'</h3>';
+  const opts = document.createElement('div'); opts.className = "opts";
+  q.opts.forEach(([letter,label])=>{
+    const o = document.createElement('label');
+    o.className = "opt" + (answers[idx]===letter ? " sel" : "");
+    o.innerHTML = '<input type="radio" name="q'+idx+'" value="'+letter+'" '+(answers[idx]===letter?"checked":"")+'><span><span class="lbl">'+letter+'. '+label+'</span></span>';
+    o.addEventListener('click', (e)=>{
+      if(e.target.type === "radio"){ answers[idx]=letter; }
+      else { answers[idx]=letter; o.querySelector('input').checked=true; }
+      card.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+      o.classList.add('sel');
+      nextBtn.disabled = false;
+      nextBtn.focus && nextBtn.focus();
+    });
+    opts.appendChild(o);
+  });
+  card.appendChild(opts);
+  cardsEl.appendChild(card);
+  prevBtn.disabled = idx === 0;
+  nextBtn.textContent = idx === QUIZ.length-1 ? "See my score" : "Next →";
+  nextBtn.disabled = answers[idx] === null;
+}
+
+nextBtn.addEventListener('click', ()=>{
+  if(answers[idx]===null) return;
+  if(idx < QUIZ.length-1){ idx++; render(); }
+  else { showResult(); }
+});
+prevBtn.addEventListener('click', ()=>{ if(idx>0){ idx--; render(); } });
+
+function categoryScores(){
+  const out = {}; CATS.forEach(c=>out[c]=0);
+  QUIZ.forEach((q,i)=>{ out[q.cat] += POINTS[answers[i]]; });
+  const weighted = {};
+  CATS.forEach(c=>{
+    const n = QUIZ.filter(q=>q.cat===c).length;
+    const cat = QUIZ.find(q=>q.cat===c);
+    weighted[c] = Math.round((out[c]/(n*4)) * cat.w);
+  });
+  const total = CATS.reduce((s,c)=>s+weighted[c],0);
+  return {raw: CATS.reduce((s,c)=>s+out[c],0), weighted, total};
+}
+
+function band(score){
+  if(score>=80) return {k:'a', label:'Podium', verdict:'Strong foundation — move to a time-boxed pilot.', next:['Run a 90-day pilot with a named owner and written success metric','Run the Vendor Evaluation Toolkit before buying','Publish the results to the rest of the company']};
+  if(score>=55) return {k:'b', label:'Developing', verdict:'Workable, but structural gaps remain.', next:['Fix ownership + data quality first (top gaps below)','Build the 90-day readiness plan','Time-box a pilot and pre-commit the kill decision']};
+  if(score>=30) return {k:'c', label:'Initial', verdict:'Fragmented and ad-hoc. Stop buying tools.', next:['Run the 90-minute vendor score / diagnosis before any purchase','Inventory the data and name a single accountable owner','Write down the process you want to automate, with metrics']};
+  return {k:'d', label:'Absent', verdict:'Pre-readiness — start with the basics.', next:['Create a data inventory and get executive sponsorship','Adopt the EU AI Act transparency basics before shipping anything','Book a diagnostic to build the first 90-day plan']};
+}
+
+function gapText(cat, pts, maxPts){
+  const map = {
+    Data:"Incomplete data map, quality, or access — the model inherits this mess.",
+    Skills:"No named owner or in-house capability — nobody is accountable.",
+    Process:"Processes are undocumented or undrilled — nothing to automate reliably.",
+    Governance:"Weak oversight or compliance posture — risk surfaces late.",
+    Budget:"No clear budget or ROI bar — spend is unfocused."
+  };
+  return map[cat];
+}
+
+function showResult(){
+  document.getElementById('quiz').style.display = 'none';
+  const {weighted, total} = categoryScores();
+  const b = band(total);
+  const gauge = document.getElementById('gauge');
+  const deg = Math.round(total/100*360);
+  gauge.style.background = 'conic-gradient(var(--teal) '+deg+'deg, var(--line) 0deg)';
+  document.getElementById('scoreVal').textContent = total;
+  const badge = document.getElementById('badge');
+  badge.className = "badge "+b.k;
+  badge.textContent = b.label;
+  document.getElementById('verdict').textContent = b.verdict;
+
+  const bars = document.getElementById('bars');
+  bars.innerHTML = "";
+  CATS.forEach(c=>{
+    const r = document.createElement('div'); r.className='bar-row';
+    const pct = weighted[c];
+    r.innerHTML = '<div class="t"><span><b>'+c+'</b></span><span>'+pct+' / '+QUIZ.find(q=>q.cat===c).w+'</span></div><div class="bar"><i style="width:'+pct+'%"></i></div>';
+    bars.appendChild(r);
+  });
+
+  const sorted = CATS.map(c=>({c, pts:weighted[c], maxPts:QUIZ.find(q=>q.cat===c).w}))
+    .sort((a,b)=>(a.pts/a.maxPts)-(b.pts/b.maxPts));
+  const top3 = sorted.slice(0,3);
+  const gaps = document.getElementById('gaps');
+  gaps.innerHTML = '<h4>Fix these first</h4><ol>';
+  top3.forEach(g=>{
+    const li = document.createElement('li');
+    li.innerHTML = '<b>'+g.c+'</b> <span>— '+gapText(g.c,g.pts,g.maxPts)+'</span>';
+    gaps.appendChild(li);
+  });
+  const ol = gaps.querySelector('ol');
+  b.next.forEach((s,i)=>{
+    if(i<2){ const li=document.createElement('li'); li.textContent = 'Next step: '+s; ol.appendChild(li); }
+  });
+  const res = document.getElementById('result');
+  res.style.display = 'block';
+  res.scrollIntoView({behavior:'smooth'});
+  try { localStorage.setItem('mra_scorecard', JSON.stringify({score:total, weighted, date:new Date().toISOString().slice(0,10)})); } catch(e){}
+  document.getElementById('download').onclick = ()=>downloadReport(total, weighted, b);
+  document.getElementById('printBtn').onclick = ()=>window.print();
+  document.getElementById('sendEmail').onclick = ()=>{
+    const em = document.getElementById('email').value.trim();
+    if(!em || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ alert("Please enter a valid work email."); return; }
+    document.getElementById('sendEmail').textContent = "Request recorded — delivery activates once accounts are connected.";
+    document.getElementById('sendEmail').disabled = true;
+    try { localStorage.setItem('mra_report_request', JSON.stringify({email:em, score:total, date:new Date().toISOString().slice(0,10)})); } catch(e){}
+  };
+}
+
+function downloadReport(total, weighted, b){
+  const lines = [
+    "AI READINESS SCORECARD — Meridian Research & Advisory",
+    "Date: "+new Date().toISOString().slice(0,10),
+    "Score: "+total+"/100 — "+b.label.toUpperCase(),
+    "",
+    "CATEGORY BREAKDOWN",
+    ...CATS.map(c=>c+": "+weighted[c]+"/"+QUIZ.find(q=>q.cat===c).w),
+    "",
+    "VERDICT: "+b.verdict,
+    "",
+    "TOP GAPS TO FIX FIRST:",
+    ...CATS.map(c=>({c, p:weighted[c]/QUIZ.find(q=>q.cat===c).w})).sort((a,b)=>a.p-b.p).slice(0,3).map(g=>"- "+g.c),
+    "",
+    "Analysis is AI-assisted and human-reviewed.",
+    "Meridian Research & Advisory — Decisions beyond the horizon."
+  ];
+  const txt = lines.join("\n");
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "mra-ai-readiness-report-"+new Date().toISOString().slice(0,10)+".txt";
+  a.click();
+}
+
+render();
+</script>
+</body>
+</html>

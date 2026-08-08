@@ -1,0 +1,84 @@
+{
+  "name": "WF-LG-01 — Lead Source Pull (nightly)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "cronExpression", "expression": "0 2 * * *" }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-0001-4f01-8a01-000000000001",
+      "name": "Schedule (daily 02:00 UTC)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.example.com/leads?key={{$env.LEAD_API_KEY}}&since={{$now.toFormat('yyyy-MM-dd')}}",
+        "sendHeaders": false,
+        "options": { "timeout": 30000 }
+      },
+      "id": "a1b2c3d4-0002-4f02-8a02-000000000002",
+      "name": "Fetch source (Crunchbase/funding/jobs)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize + dedupe by domain. Runbook: 17-ops/workflows/WF-LG-01-lead-source-pull.md\nconst out = [];\nconst seen = new Set();\nfor (const item of $input.all()) {\n  const records = item.json.leads || item.json.results || [item.json];\n  for (const r of records) {\n    if (!r.name) continue;\n    const domain = String(r.domain || r.website || '').replace(/^https?:\\/\\//,'').replace(/^www\\./,'').toLowerCase();\n    if (!domain || seen.has(domain)) continue;\n    seen.add(domain);\n    out.push({ json: {\n      company_name: r.name,\n      domain,\n      industry: r.industry || 'unknown',\n      employee_band: r.employees || 'unknown',\n      source_channel: r.source || 'example-api',\n      discovered_at: new Date().toISOString().slice(0,10)\n    }});\n  }\n}\nreturn out;"
+      },
+      "id": "a1b2c3d4-0003-4f03-8a03-000000000003",
+      "name": "Normalize & dedupe",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": { "mode": "sql", "value": "companies" },
+        "columns": "company_name,domain,industry,employee_band,source_channel,discovered_at",
+        "values": "={{ $json.company_name }},={{ $json.domain }},={{ $json.industry }},={{ $json.employee_band }},={{ $json.source_channel }},={{ $json.discovered_at }}",
+        "options": { "insertIgnore": true }
+      },
+      "id": "a1b2c3d4-0004-4f04-8a04-000000000004",
+      "name": "Insert into companies (dedupe)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {},
+      "id": "a1b2c3d4-0005-4f05-8a05-000000000005",
+      "name": "Log + end",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [880, 0]
+    }
+  ],
+  "connections": {
+    "Schedule (daily 02:00 UTC)": {
+      "main": [ [ { "node": "Fetch source (Crunchbase/funding/jobs)", "type": "main", "index": 0 } ] ]
+    },
+    "Fetch source (Crunchbase/funding/jobs)": {
+      "main": [ [ { "node": "Normalize & dedupe", "type": "main", "index": 0 } ] ]
+    },
+    "Normalize & dedupe": {
+      "main": [ [ { "node": "Insert into companies (dedupe)", "type": "main", "index": 0 } ] ]
+    },
+    "Insert into companies (dedupe)": {
+      "main": [ [ { "node": "Log + end", "type": "main", "index": 0 } ] ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "meridian-wf-lg-01"
+  }
+}

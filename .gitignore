@@ -1,0 +1,33 @@
+# Secrets & local cruft — never commit
+*.env
+.env.*
+credentials-env.local
+*.pem
+*.key
+*.p12
+*.jks
+
+# Node
+node_modules/
+dist/
+build/
+*.log
+npm-debug.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Backups & archives
+*.zip
+*.gz
+*.tar
+*.7z
+!*.tar.gz.example
+backup-*/
+
+# Vault / personal
+.vault/
+secrets/

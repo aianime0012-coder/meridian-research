@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian OS — KPI Dashboard</title>
+<style>
+  :root{
+    --navy:#0B1F3A; --blue:#1B5FD9; --teal:#14B8A6; --amber:#F59E0B;
+    --paper:#FAFAF7; --slate:#5B6B7C; --line:#E3E7EC; --red:#DC2626; --green:#059669;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Segoe UI',Inter,Arial,sans-serif; background:var(--paper); color:var(--navy);}
+  header{background:var(--navy); color:#fff; padding:18px 28px; display:flex; align-items:center; justify-content:space-between;}
+  header h1{font-size:20px; font-weight:600; letter-spacing:.3px;}
+  header .sub{color:#A9B7C6; font-size:13px; margin-top:2px;}
+  header .asof{color:#A9B7C6; font-size:13px;}
+  nav{background:#fff; border-bottom:1px solid var(--line); padding:0 20px; display:flex; gap:4px; overflow-x:auto;}
+  nav button{background:none; border:none; padding:14px 18px; font-size:14px; font-weight:600; color:var(--slate); cursor:pointer; border-bottom:3px solid transparent;}
+  nav button.active{color:var(--blue); border-bottom-color:var(--blue);}
+  main{max-width:1180px; margin:0 auto; padding:24px;}
+  section{display:none;}
+  section.active{display:block;}
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:22px;}
+  .card{background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px;}
+  .card .label{font-size:12px; color:var(--slate); text-transform:uppercase; letter-spacing:.4px;}
+  .card .value{font-size:26px; font-weight:700; margin-top:6px;}
+  .card .delta{font-size:12px; margin-top:4px;}
+  .up{color:var(--green);} .down{color:var(--red);} .warn{color:var(--amber);}
+  .panel{background:#fff; border:1px solid var(--line); border-radius:10px; padding:18px; margin-bottom:22px;}
+  .panel h3{font-size:15px; margin-bottom:14px;}
+  .bars{display:flex; align-items:flex-end; gap:10px; height:180px; padding-top:10px;}
+  .barcol{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;}
+  .bar{width:100%; background:var(--blue); border-radius:4px 4px 0 0; min-height:2px; transition:height .4s;}
+  .bar.teal{background:var(--teal);}
+  .bar.amber{background:var(--amber);}
+  .barcol .m{font-size:11px; color:var(--slate);}
+  .table{width:100%; border-collapse:collapse; font-size:14px;}
+  .table th{text-align:left; color:var(--slate); font-size:12px; text-transform:uppercase; letter-spacing:.3px; border-bottom:2px solid var(--line); padding:8px;}
+  .table td{padding:9px 8px; border-bottom:1px solid var(--line);}
+  .pct{font-variant-numeric:tabular-nums;}
+  .meter{height:8px; background:var(--line); border-radius:4px; overflow:hidden;}
+  .meter>div{height:100%; background:var(--teal);}
+  footer{max-width:1180px; margin:0 auto; padding:10px 24px 30px; color:var(--slate); font-size:12px;}
+  @media(max-width:640px){.cards{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Meridian OS — Company KPI Dashboard</h1>
+    <div class="sub">Meridian Research &amp; Advisory · Decisions beyond the horizon.</div>
+  </div>
+  <div class="asof">As of <span id="asof"></span> · Refresh via WF-OP-03</div>
+</header>
+
+<nav id="tabs">
+  <button data-tab="company" class="active">Company</button>
+  <button data-tab="finance">Finance</button>
+  <button data-tab="sales">Sales</button>
+  <button data-tab="marketing">Marketing</button>
+  <button data-tab="ops">Ops &amp; Quality</button>
+</nav>
+
+<main>
+  <!-- COMPANY -->
+  <section id="company" class="active">
+    <div class="cards" id="company-cards"></div>
+    <div class="panel"><h3>Finance snapshot</h3><div class="bars" id="finance-bars"></div></div>
+  </section>
+
+  <!-- FINANCE -->
+  <section id="finance">
+    <div class="cards" id="finance-cards"></div>
+    <div class="panel"><h3>Revenue &amp; MRR (Year 1)</h3><div class="bars" id="rev-bars"></div></div>
+    <div class="panel"><h3>Cash forecast</h3><div class="bars" id="cash-bars"></div></div>
+  </section>
+
+  <!-- SALES -->
+  <section id="sales">
+    <div class="cards" id="sales-cards"></div>
+    <div class="panel"><h3>Pipeline by stage</h3><table class="table" id="pipeline-table"></table></div>
+    <div class="panel"><h3>SQL by source</h3><div class="bars" id="source-bars"></div></div>
+  </section>
+
+  <!-- MARKETING -->
+  <section id="marketing">
+    <div class="cards" id="marketing-cards"></div>
+    <div class="panel"><h3>Organic sessions growth</h3><div class="bars" id="seo-bars"></div></div>
+  </section>
+
+  <!-- OPS -->
+  <section id="ops">
+    <div class="cards" id="ops-cards"></div>
+    <div class="panel"><h3>Workflow health (uptime %)</h3><div class="bars" id="wf-bars"></div></div>
+  </section>
+</main>
+
+<footer>Seed data in <code>data.json</code>. Connect to the ops DB (<code>kpi_log</code>) for live values. Meridian OS internal tool.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let D = {};
+
+async function load(){
+  try{ D = await (await fetch('data.json')).json(); }
+  catch(e){ D = {}; }
+  $('asof').textContent = D.board ? D.board.as_of : '—';
+  renderAll();
+}
+function pct(v){ return (v*100).toFixed(0)+'%'; }
+function usd(v){ return '$'+(v/1000).toFixed(1)+'k'; }
+
+function card(label, value, cls){
+  return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div><div class="delta ${cls||''}"></div></div>`;
+}
+function bars(el, items, color, fmt){
+  const max = Math.max(...items.map(i=>i.v), 1);
+  el.innerHTML = items.map(i=>
+    `<div class="barcol"><div class="bar ${color||''}" style="height:${Math.round(i.v/max*150)}px"></div><div class="m">${i.m}</div><div class="m">${fmt?fmt(i.v):i.v}</div></div>`
+  ).join('');
+}
+function cards(el, arr){ el.innerHTML = arr.map(c=>card(c.label,c.value,c.cls)).join(''); }
+
+function renderAll(){
+  const b = D.board||{};
+  cards($('company-cards'), [
+    card('MRR', usd(b.mrr)), card('ARR run-rate', usd(b.arr||b.mrr*12)),
+    card('Revenue YTD', usd(b.revenue_ytd)), card('Gross margin', pct(b.gross_margin)),
+    card('Net margin', pct(b.net_margin), (b.net_margin||0)<0?'down':''),
+    card('Runway', b.runway_months+' mo'), card('Active accounts', b.active_accounts),
+    card('Churn', pct(b.churn_pct)), card('NRR', pct(b.nrr_pct))
+  ]);
+  const fin = D.finance||{};
+  bars($('finance-bars'), (fin.monthly||[]).map(m=>({m:m.m, v:m.revenue})), 'teal', usd);
+  cards($('finance-cards'), [
+    card('MRR (latest)', usd((fin.monthly||[]).slice(-1)[0]?.mrr||0)),
+    card('Revenue (latest)', usd((fin.monthly||[]).slice(-1)[0]?.revenue||0)),
+    card('Gross margin', pct(b.gross_margin)),
+    card('Runway', b.runway_months+' mo')
+  ]);
+  bars($('rev-bars'), (fin.monthly||[]).map(m=>({m:m.m, v:m.mrr})), 'blue', usd);
+  bars($('cash-bars'), (fin.cash_forecast||[]).map(c=>({m:c.m, v:c.cash})), 'amber', usd);
+
+  const s = D.sales||{};
+  cards($('sales-cards'), [
+    card('Win rate', pct(s.metrics?.win_rate)), card('Avg deal', usd(s.metrics?.avg_deal)),
+    card('Cycle', s.metrics?.cycle_days+' days'), card('Lead→SQL', pct(s.metrics?.lead_to_sql)),
+    card('SQL→Won', pct(s.metrics?.sql_to_won)), card('MRR attach', pct(s.metrics?.mrr_attach)),
+    card('Renewal', pct(s.metrics?.renewal)), card('Forecast accuracy', pct(s.metrics?.forecast_accuracy))
+  ]);
+  $('pipeline-table').innerHTML = '<tr><th>Stage</th><th>Deals</th><th>Weighted value</th><th>Width</th></tr>' +
+    (s.pipeline||[]).map(p=>`<tr><td>${p.stage}</td><td>${p.count}</td><td>${usd(p.value)}</td><td><div class="meter"><div style="width:${Math.min(p.value/180000*100,100)}%"></div></div></td></tr>`).join('');
+  bars($('source-bars'), (s.by_source||[]).map(x=>({m:x.source, v:x.sql})), 'teal');
+
+  const m = D.marketing||{};
+  cards($('marketing-cards'), [
+    card('MQLs/mo', m.metrics?.mqls), card('MQL→SQL', pct(m.metrics?.mql_to_sql)),
+    card('List growth', pct(m.metrics?.list_growth_pct)), card('Open rate', pct(m.metrics?.open_rate_pct)),
+    card('Signup conv.', pct(m.metrics?.content_to_signup_pct)), card('Webinar→MQL', pct(m.metrics?.webinar_to_mql_pct)),
+    card('Cost/MQL', '$'+m.metrics?.cpm_mql_usd)
+  ]);
+  const mg = m.magnets||{};
+  cards($('marketing-cards'), [
+    card('Scorecard downloads', mg.scorecard_downloads+' / '+mg.scorecard_download_target),
+    card('Scorecard→MQL', pct(mg.scorecard_form_to_mql_pct)),
+    card('Toolkit downloads', mg.toolkit_downloads+' / '+mg.toolkit_download_target),
+    card('Toolkit→MQL', pct(mg.toolkit_form_to_mql_pct)),
+    card('Content QA-passed', mg.content_assets_qa),
+    card('Content published', mg.content_assets_published)
+  ]);
+  bars($('seo-bars'), (m.organic_sessions||[]).map(x=>({m:x.m, v:x.v})), 'amber');
+
+  const o = D.ops||{};
+  cards($('ops-cards'), [
+    card('On-time delivery', pct(o.metrics?.on_time_pct)), card('QA pass rate', pct(o.metrics?.qa_pass_pct)),
+    card('Automation coverage', pct(o.metrics?.automation_coverage_pct)), card('Workflow uptime', pct(o.metrics?.uptime_pct)),
+    card('CSAT', o.metrics?.csat+' / 5')
+  ]);
+  bars($('wf-bars'), (o.workflow_health||[]).map(w=>({m:w.wf, v:w.ok})), 'teal', v=>v+'%');
+}
+
+document.querySelectorAll('#tabs button').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('#tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    $(''+btn.dataset.tab).classList.add('active');
+  };
+});
+load();
+</script>
+</body>
+</html>

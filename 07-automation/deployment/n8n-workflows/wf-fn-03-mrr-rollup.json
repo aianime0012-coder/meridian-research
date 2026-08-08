@@ -1,0 +1,87 @@
+{
+  "name": "WF-FN-03 — MRR Rollup (nightly)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "cronExpression", "expression": "0 0 * * *" }
+          ]
+        }
+      },
+      "id": "b5e6f7a8-0001-4f01-8b01-000000000001",
+      "name": "Schedule (daily 00:00 UTC)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.stripe.com/v1/subscriptions?status=active&limit=100",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{$env.STRIPE_SECRET_KEY}}" }
+          ]
+        },
+        "options": { "timeout": 30000 }
+      },
+      "id": "b5e6f7a8-0002-4f02-8b02-000000000002",
+      "name": "Stripe active subscriptions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Compute MRR/ARR + churn deltas. Runbook: 17-ops/workflows/WF-FN-03-mrr-rollup.md\nconst subs = [];\nfor (const item of $input.all()) {\n  const data = item.json;\n  if (Array.isArray(data.data)) subs.push(...data.data); else if (data.object === 'subscription') subs.push(data);\n}\nconst period = new Date().toISOString().slice(0,7); // YYYY-MM\nlet mrr = 0;\nfor (const s of subs) {\n  for (const it of (s.items && s.items.data) || []) {\n    const p = it.price || {};\n    const amount = (p.unit_amount || 0) / 100;\n    const interval = p.recurring ? p.recurring.interval : 'month';\n    mrr += interval === 'year' ? amount / 12 : amount;\n  }\n}\nreturn [{ json: { metric: 'mrr', value: Math.round(mrr), period, source: 'stripe' } }];"
+      },
+      "id": "b5e6f7a8-0003-4f03-8b03-000000000003",
+      "name": "Compute MRR",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO kpi_log (metric, value, period, source) VALUES ({{ $json.metric | toJsonString }}, {{ $json.value }}, {{ $json.period | toJsonString }}, 'stripe')\nON CONFLICT(metric, period) DO UPDATE SET value = excluded.value, recorded_at = datetime('now');",
+        "options": {}
+      },
+      "id": "b5e6f7a8-0004-4f04-8b04-000000000004",
+      "name": "Upsert kpi_log (mrr)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {},
+      "id": "b5e6f7a8-0005-4f05-8b05-000000000005",
+      "name": "Log + end",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [880, 0]
+    }
+  ],
+  "connections": {
+    "Schedule (daily 00:00 UTC)": {
+      "main": [ [ { "node": "Stripe active subscriptions", "type": "main", "index": 0 } ] ]
+    },
+    "Stripe active subscriptions": {
+      "main": [ [ { "node": "Compute MRR", "type": "main", "index": 0 } ] ]
+    },
+    "Compute MRR": {
+      "main": [ [ { "node": "Upsert kpi_log (mrr)", "type": "main", "index": 0 } ] ]
+    },
+    "Upsert kpi_log (mrr)": {
+      "main": [ [ { "node": "Log + end", "type": "main", "index": 0 } ] ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "meridian-wf-fn-03"
+  }
+}

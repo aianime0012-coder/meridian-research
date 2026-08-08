@@ -1,0 +1,118 @@
+{
+  "as_of": "2026-08-07",
+  "company": {
+    "name": "Meridian Research & Advisory",
+    "tagline": "Decisions beyond the horizon."
+  },
+  "board": {
+    "mrr": 3000,
+    "arr": 36000,
+    "revenue_ytd": 14000,
+    "gross_margin": 0.80,
+    "net_margin": -0.14,
+    "runway_months": 12,
+    "active_accounts": 2,
+    "churn_pct": 0.0,
+    "nrr_pct": 0.0
+  },
+  "finance": {
+    "monthly": [
+      { "m": "Jan", "mrr": 0, "revenue": 0 },
+      { "m": "Feb", "mrr": 1500, "revenue": 1500 },
+      { "m": "Mar", "mrr": 3000, "revenue": 3500 },
+      { "m": "Apr", "mrr": 4500, "revenue": 7000 },
+      { "m": "May", "mrr": 7500, "revenue": 12000 },
+      { "m": "Jun", "mrr": 10000, "revenue": 18000 },
+      { "m": "Jul", "mrr": 15000, "revenue": 26000 },
+      { "m": "Aug", "mrr": 20000, "revenue": 36000 },
+      { "m": "Sep", "mrr": 26000, "revenue": 50000 },
+      { "m": "Oct", "mrr": 35000, "revenue": 68000 },
+      { "m": "Nov", "mrr": 45000, "revenue": 91000 },
+      { "m": "Dec", "mrr": 60000, "revenue": 125000 }
+    ],
+    "expenses_monthly": [
+      { "m": "Jan", "infra": 150, "llm": 300, "tools": 250, "marketing": 200 },
+      { "m": "Apr", "infra": 180, "llm": 450, "tools": 320, "marketing": 500 },
+      { "m": "Jul", "infra": 220, "llm": 600, "tools": 400, "marketing": 800 },
+      { "m": "Oct", "infra": 260, "llm": 750, "tools": 480, "marketing": 1200 }
+    ],
+    "cash_forecast": [
+      { "m": "Aug", "cash": 18000 },
+      { "m": "Sep", "cash": 23000 },
+      { "m": "Oct", "cash": 30000 },
+      { "m": "Nov", "cash": 42000 },
+      { "m": "Dec", "cash": 55000 }
+    ]
+  },
+  "sales": {
+    "pipeline": [
+      { "stage": "Lead", "count": 120, "value": 0 },
+      { "stage": "SQL", "count": 40, "value": 180000 },
+      { "stage": "Discovery", "count": 15, "value": 105000 },
+      { "stage": "Proposal", "count": 6, "value": 54000 },
+      { "stage": "Negotiation", "count": 3, "value": 27000 }
+    ],
+    "metrics": {
+      "win_rate": 0.30,
+      "avg_deal": 6000,
+      "cycle_days": 45,
+      "lead_to_sql": 0.35,
+      "sql_to_won": 0.25,
+      "mrr_attach": 0.60,
+      "renewal": 0.90,
+      "forecast_accuracy": 0.85
+    },
+    "by_source": [
+      { "source": "LinkedIn", "sql": 14 },
+      { "source": "Crunchbase", "sql": 8 },
+      { "source": "Content/MQL", "sql": 10 },
+      { "source": "Referrals", "sql": 5 },
+      { "source": "Direct", "sql": 3 }
+    ]
+  },
+  "marketing": {
+    "metrics": {
+      "mqls": 40,
+      "mql_to_sql": 0.30,
+      "list_growth_pct": 0.20,
+      "open_rate_pct": 0.45,
+      "content_to_signup_pct": 0.02,
+      "webinar_to_mql_pct": 0.25,
+      "cpm_mql_usd": 25
+    },
+    "magnets": {
+      "scorecard_downloads": 0,
+      "scorecard_form_to_mql_pct": 0.0,
+      "scorecard_download_target": 150,
+      "toolkit_downloads": 0,
+      "toolkit_form_to_mql_pct": 0.0,
+      "toolkit_download_target": 120,
+      "content_assets_qa": 8,
+      "content_assets_published": 0
+    },
+    "organic_sessions": [
+      { "m": "Feb", "v": 800 },
+      { "m": "Apr", "v": 1500 },
+      { "m": "Jun", "v": 2400 },
+      { "m": "Aug", "v": 3200 },
+      { "m": "Oct", "v": 4200 },
+      { "m": "Dec", "v": 5200 }
+    ]
+  },
+  "ops": {
+    "metrics": {
+      "on_time_pct": 0.95,
+      "qa_pass_pct": 0.90,
+      "automation_coverage_pct": 0.72,
+      "uptime_pct": 0.99,
+      "csat": 4.5
+    },
+    "workflow_health": [
+      { "wf": "WF-FN-03 MRR rollup", "ok": 99 },
+      { "wf": "WF-LG-01 Source pulls", "ok": 98 },
+      { "wf": "WF-RS-01 Signals", "ok": 99 },
+      { "wf": "WF-MK-02 Newsletter", "ok": 97 },
+      { "wf": "WF-DV-04 QA gate", "ok": 100 }
+    ]
+  }
+}
