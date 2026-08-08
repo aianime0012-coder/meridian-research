@@ -1,10 +1,11 @@
 # Implementation Status — Meridian Research & Advisory
 
-> Version 1.0 · Updated 2026-08-07 · This is the single view of what's built vs. what the owner must do.
+> Version 1.1 · Updated 2026-08-08 · This is the single view of what's built vs. what the owner must do.
 
 ## Legend
 
 - **BUILT** — artifact exists and is complete in this repo.
+- **LIVE** — built, published/accessible on the public web or running.
 - **DESIGN** — spec complete; implementation pending (needs accounts/tools).
 - **OWNER** — requires human owner action (accounts, legal, money).
 
@@ -31,6 +32,8 @@
 
 | System | Status |
 |---|---|
+| GitHub repo + Actions | **LIVE** — `github.com/aianime0012-coder/meridian-research` |
+| Marketing site (landing + scorecard) | **LIVE** — `aianime0012-coder.github.io/meridian-research/` (GitHub Pages, auto-deploy) |
 | CRM (HubSpot/Airtable) | OWNER — create account, connect |
 | Stripe + PayPal | OWNER — create entity-connected accounts, KYC |
 | Email (Resend/SendGrid) | OWNER — create account |
@@ -40,6 +43,17 @@
 | Enrichment APIs (Clearbit/Hunter/Apollo, Crunchbase) | OWNER — API keys |
 | LLM providers | OWNER — API key |
 | Dashboards | BUILT (seed) — connect DB for live |
+| Site analytics (Plausible/GA4) | OWNER — create account, add script |
+
+## Go-live progress (2026-08-08)
+
+| Item | Status |
+|---|---|
+| Git repo (source control + CI) | LIVE |
+| Marketing site + interactive scorecard (GitHub Pages) | LIVE — auto-deploys on push to `main` |
+| Newsletter #001 / blog / LinkedIn | DRAFT — owner approval gate before publish |
+| Payments, CRM, email, scheduling, e-sign, n8n | OWNER — accounts/keys |
+| LLC/EIN/bank/legal execution | OWNER |
 
 ## Built-but-not-wired summary
 

@@ -89,6 +89,26 @@ requests in localStorage only); nothing publicly published yet (owner gate).
 | IMP-014 | Q3 calendar build | No single source of truth for content dates | Live calendar `04-marketing/calendar/2026-Q3.md` links every asset to a date + status | Astra | done | Executable plan |
 | IMP-015 | Measurement wiring | Magnet targets were spec'd but not tracked | Magnet KPIs added to `measurement.md` + dashboard `data.json`/`index.html` | Euclid | done | Trackable engine |
 
+## 2026-08-08 — Go-live (fifth run of the day)
+
+**Green:** public go-live achieved without waiting on accounts — repo pushed
+(`github.com/aianime0012-coder/meridian-research`, 154 files), marketing site +
+interactive scorecard deployed to GitHub Pages via workflow, verified HTTP 200,
+auto-deploy wired to `main`. Secrets scan clean before push; `.gitignore`
+protects `.env`/keys. Launch checklist + implementation status updated.
+
+**Red:** revenue-critical surfaces still owner-gated (LLC/EIN/bank, Stripe,
+CRM, email, n8n). Newsletter/blog/social drafts cannot publish until owner
+approval (IMP-011).
+
+**Improvements logged:**
+| # | Source | Root cause | Action | Owner | Status | Impact |
+|---|---|---|---|---|---|---|
+| IMP-016 | Go-live | Repo had no version control/CI | Public repo + Pages auto-deploy workflow; site self-updates on push | Forge | done | Live site + audit trail |
+| IMP-017 | Go-live | Site could serve stale or broken builds | Auto-deploy only on `04-marketing/site/**` path change; workflow_dispatch for manual | Forge | done | Deterministic deploys |
+| IMP-018 | Go-live | Secrets risk on first push | Pre-push secret regex scan + `.gitignore` hardened (IMP-018 gate in CI idea) | Forge | done | No leak risk |
+| IMP-019 | Go-live | Owner gates block full production | Owner: complete `18-status/launch-checklist.md` A–D; then wire payments/CRM/email | Owner | pending | Production revenue |
+
 ## Daily report
 
 ```markdown

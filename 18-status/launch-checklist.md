@@ -1,6 +1,15 @@
 # Launch Checklist — Meridian Research & Advisory
 
-> Version 1.0 · Owner executes the items below; Meridian agents prepare everything else.
+> Version 1.1 · Updated 2026-08-08 · Owner executes the items below; Meridian agents prepare everything else.
+> **Status: PARTIAL GO-LIVE** — repo + marketing site + scorecard are LIVE (see §G). Sections A–D still owner-gated.
+
+## G. Completed by Meridian agents (2026-08-08)
+
+- [x] **Git repo + CI**: `github.com/aianime0012-coder/meridian-research` (public, main branch)
+- [x] **Marketing site LIVE**: `https://aianime0012-coder.github.io/meridian-research/`
+  — landing page (`/`), interactive AI Readiness Scorecard (`/scorecard.html`),
+  auto-deploy workflow (`.github/workflows/pages.yml`), verified 200
+- [x] Content engine ready to publish: newsletter #001, blog, LinkedIn batch, 2 magnets, outreach templates (all QA-passed)
 
 ## A. Legal entity & money (critical path)
 
