@@ -1,7 +1,7 @@
 # Only 26% of AI Bets Pay Off. Here's What the Other 74% Get Wrong.
 
 > Blog draft · Meridian Research & Advisory · By the Research & Marketing desk
-> Target keyword: "AI ROI" / "why AI projects fail" · ~1,100 words · Status: DRAFT (QA + owner review before publish)
+> Target keyword: "AI ROI" / "why AI projects fail" · ~1,100 words · Status: **PUBLISHED 2026-08-08** → `04-marketing/site/blog/2026-08-08-only-26-percent-of-ai-bets-pay-off.html` (live on GitHub Pages)
 > Lead magnet CTA: AI Readiness Scorecard + Vendor Evaluation Toolkit.
 
 ## SEO block (for CMS publish)
@@ -120,7 +120,7 @@ Both are free, evidence-first, and take less time than a single vendor demo.
 - [x] Keyword + H2 structure in place (AI ROI / why AI projects fail)
 - [x] Internal links to scorecard + toolkit magnets
 - [x] SEO meta (title/description) + OG image spec
-- [ ] Schedule via WF-MK-01 content pipeline
+- [x] Published 2026-08-08 (HTML page on GitHub Pages, linked from homepage)
 
 ## Related
 
